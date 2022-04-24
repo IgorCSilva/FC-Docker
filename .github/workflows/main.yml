@@ -9,10 +9,12 @@ jobs:
       - name: Build the stack
         run: |
           docker-compose up -d --build
-
+          docker ps
+          docker image ls
+          
       - name: Test app
         run: |
-          docker run --network container:nodeapp npm test
+          docker run --network nodeapp npm test
           
       - name: Extract commit
         shell: bash
