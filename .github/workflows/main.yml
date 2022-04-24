@@ -23,4 +23,8 @@ jobs:
 
       - name: Stop containers
         if: always()
+<<<<<<< HEAD
         run: docker-compose -f down
+=======
+        run: docker-compose -f down
+>>>>>>> e8ec8692a390e42bfd255e07e27c85581198c59c
