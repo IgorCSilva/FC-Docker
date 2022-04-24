@@ -11,10 +11,10 @@ jobs:
           docker-compose up -d --build
       
       - name: List containers
-          docker ps
+        run: docker ps
       
       - name: List images
-          docker image ls
+        run: docker image ls
           
       - name: Test app
         run: |
