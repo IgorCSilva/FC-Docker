@@ -6,20 +6,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: node/node_modules
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
-
       - name: Build the stack
-        run: docker-compose up -d --build
-
+        run: |
+          docker-compose up -d --build
+          docker exec nodeapp npm test
+          
       - name: List nginx directories
         run: docker exec nginx ls
-
-      - name: Test node app.
-        run: docker exec nodeapp npm test
 
       - name: Stop containers
         if: always()
