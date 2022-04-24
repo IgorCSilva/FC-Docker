@@ -15,10 +15,13 @@ jobs:
       
       - name: List images
         run: docker image ls
+      
+      - name: List networks
+        run: docker network ls
           
       - name: Test app
         run: |
-          docker run --network fc-docker-desafio-nginx-node-mysql_nodeapp npm test
+          docker run fc-docker-desafio-nginx-node-mysql_nodeapp npm test
           
       - name: Extract commit
         shell: bash
