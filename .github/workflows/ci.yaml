@@ -1,0 +1,80 @@
+
+on: 
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  check-application:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build the stack
+        run: |
+          docker-compose up -d --build
+          
+      - name: Test liint
+        run: |
+          docker run fc-docker-desafio-nginx-node-mysql_nodeapp npx eslint app.js
+      
+      - name: List containers
+        run: docker ps
+      
+      - name: List images
+        run: docker image ls
+      
+      - name: List networks
+        run: docker network ls
+          
+      - name: Test app
+        run: |
+          docker run fc-docker-desafio-nginx-node-mysql_nodeapp npm test
+
+      # Build and push
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          tags: igoru23/node-ci:latest
+
+
+      # - name: Extract commit
+      #   shell: bash
+      #   run: |
+      #     echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+  
+      # - name: Get branch name (merge)
+      #   if: github.event_name != 'pull_request'
+      #   shell: bash
+      #   run: echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
+
+#       - name: Get branch name (pull request)
+#         if: github.event_name == 'pull_request'
+#         shell: bash
+#         run: echo "BRANCH=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
+
+
+#       - name: Send slack notification
+#         if: always()
+#         uses: edge/simple-slack-notify@master    
+#         env:
+#           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#         with:
+#           channel: '#deployment'
+#           status: ${{ job.status }}
+#           success_text: '${env.GITHUB_WORKFLOW} #${env.GITHUB_RUN_NUMBER} build completed successfully'
+#           failure_text: '${env.GITHUB_WORKFLOW} #${env.GITHUB_RUN_NUMBER} build failed'
+#           cancelled_text: '${env.GITHUB_WORKFLOW} #${env.GITHUB_RUN_NUMBER} build was cancelled'
+#           fields: |
+#             [{ "title": "Repository", "value": "${env.GITHUB_REPOSITORY}", "short": true },
+#             { "title": "Branch", "value": "${env.BRANCH}", "short": true },
+#             { "title": "Commit", "value": "${env.GITHUB_SHA_SHORT}", "short": true },
+#             { "title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"}]

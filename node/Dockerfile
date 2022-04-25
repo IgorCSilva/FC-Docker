@@ -5,6 +5,8 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 
+COPY . .
+
 # Commands to wait the database is ready.
 RUN apt-get update && apt-get install -y wget
 
