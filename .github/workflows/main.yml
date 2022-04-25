@@ -9,6 +9,10 @@ jobs:
       - name: Build the stack
         run: |
           docker-compose up -d --build
+          
+      - name: Test liint
+        run: |
+          docker run fc-docker-desafio-nginx-node-mysql_nodeapp npx eslint app.js
       
       - name: List containers
         run: docker ps
