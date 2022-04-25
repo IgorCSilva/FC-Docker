@@ -33,7 +33,10 @@ app.get('/', (req, res) => {
   connection.query(insertPeopleSql)
 
   connection.query(getPeopleSql, function (err, result, fields) {
-    if (err) console.log('Error: ', err)
+    if (err) {
+      console.log("Fields: ", fields);
+      console.log('Error: ', err)
+    }
 
     var list = ''
     result.forEach(people => {
